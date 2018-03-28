@@ -148,6 +148,6 @@ for (h in 1:(length(incrementalbins)-1)){
 }
 
 #Export data
-write.csv(conrapa_norm_decay_corrected_final, '~/Google_Drive/Lab/Data_Analysis/Heatmaps/Decay_normalised/conrapa_decay_normalised.csv')
-write.csv(wtrapa_norm_decay_corrected_final, '~/Google_Drive/Lab/Data_Analysis/Heatmaps/Decay_normalised/wtrapa_decay_normalised.csv')
+write.csv(conrapa_norm_decay_corrected_final, '~/Google_Drive/Lab/Data_Analysis/Heatmaps/Decay_normalised/conrapa_decay_normalised.csv', row.names = F)
+write.csv(wtrapa_norm_decay_corrected_final, '~/Google_Drive/Lab/Data_Analysis/Heatmaps/Decay_normalised/wtrapa_decay_normalised.csv', row.names = F)
 
