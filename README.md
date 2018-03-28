@@ -1,3 +1,3 @@
 # Chromosome conformation capture
 
-A collection fo scripts for analysing chromosome conformation capture datasets
+A collection of scripts for analysing chromosome conformation capture datasets
