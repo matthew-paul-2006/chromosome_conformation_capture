@@ -126,7 +126,7 @@ fi
 
 
 # Search for repeat fasta file; exit if not found
-REPFA=$(find $GENDIR -iname "${REPGENNAME}.fa*")
+REPFA=$(find $REPGENDIR -iname "${REPGENNAME}.fa*")
 
 if [ -z "$REPFA" ]
 then
