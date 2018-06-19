@@ -33,13 +33,16 @@
 # READLEN		How long are the reads for the fastq file
 
 ### EXAMPLE:
-# sbatch --export \
-# EXPID="ah9120a-0817",\
-# RUNDIR="/scratch/mrp",\
-# GENNAME="/home/lv38/Library/SK1Yue/Yue.SK1.genome.nuclear.mito.2micr",\
-# FQ="/scratch/lv38/HN3C3AFXX_n01_ah9120a-0817.fastq.gz",\
-# CHR="chrIX",START="211476",END="213293" \
-# SNPfinder.slurm
+#sbatch --export \
+#EXPID="N2B22015",\
+#RUNDIR="/scratch/mrp420/insilico",\
+#GENNAME="/home/mrp420/worms/genomes/WS220/WS220_ucsc",\
+#REPGENNAME="/home/mrp420/worms/genomes/rDNA/rDNA",\
+#FQ1="/scratch/cgsb/ercan/GEO/2015_meyer/N2B22015_X_X_R1_X.fastq",\
+#FQ2="/scratch/cgsb/ercan/GEO/2015_meyer/N2B22015_X_X_R2_X.fastq",\
+#DIGENDS='GATC',\
+#READLEN=100 \
+#~/worms/scripts/repeat_in-silico4C.sh
  
 #------------------------------------------------------------------------------#
 #                                  Functions                                   #
