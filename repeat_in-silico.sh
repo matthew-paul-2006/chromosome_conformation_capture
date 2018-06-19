@@ -7,8 +7,8 @@
 #SBATCH --job-name=repeat_in-silico
 #SBATCH --mail-type=FAIL
 #SBATCH --mail-user=mrp420@nyu.edu
-#SBATCH --output=/scratch/reports/%u/%x_%j.out
-#SBATCH --error=/scratch/reports/%u/%x_%j.err
+#SBATCH --output=/scratch/%u/reports/%x_%j.out
+#SBATCH --error=/scratch/%u/reports/%x_%j.err
 
 #------------------------------------------------------------------------------#
 #                                INSTRUCTIONS                                  #
@@ -77,7 +77,8 @@ function check_arg() {
 # Check arguments
 check_arg $EXPID
 check_arg $RUNDIR 
-check_arg $FQ
+check_arg $FQ1
+check_arg $FQ2
 check_arg $DIGENDS
 check_arg $READLEN
 
