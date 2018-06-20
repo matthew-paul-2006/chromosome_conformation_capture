@@ -198,7 +198,7 @@ echo "      Iterative mapping of the first reads to reference..."
 bowtie -q -5 1 -v 0 -m 1 -p 8 --seed=123 \
 	--un R1_mapping/unmapped.fastq \
 	$GENDIR/$IX ${FQ1} \
-	R1_mapping/${EXPID}_R1_${READLEN}.bam
+	R1_mapping/${EXPID}_R1_${READLEN}.sam
 
 for (( c=$START; c<=$END; c++ ))
 do
@@ -211,16 +211,16 @@ do
 	bowtie -q -5 1 -3 ${cut3prime} -v 0 -m 1 -p 8 --seed=123 \
 	--un R1_mapping/unmapped.fastq \
 	$GENDIR/$IX R1_mapping/tmp.fastq \
-	R1_mapping/${EXPID}_R1_$((${READLEN}-${cut3prime})).bam
+	R1_mapping/${EXPID}_R1_$((${READLEN}-${cut3prime})).sam
 	sleep 1
 done
 
 echo "      Iterative mapping of the second reads to reference..."
 
-bowtie -q -5 1 -v 0 -m 1 -p 8 --seed=123 \
+bowtie -q -5 1 -v 0 -m 1 -p 8 --seed=123 -S \
 	--un R1_mapping/unmapped.fastq \
 	$GENDIR/$IX ${FQ2} \
-	R2_mapping/${EXPID}_R2_${READLEN}.bam
+	R2_mapping/${EXPID}_R2_${READLEN}.sam
 
 for (( c=$START; c<=$END; c++ ))
 do
@@ -230,10 +230,10 @@ do
 	#Create tmp file for unmapped reads
 	cp R2_mapping/unmapped.fastq R2_mapping/tmp.fastq
 	#Conduct mapping
-	bowtie -q -5 1 -3 ${cut3prime} -v 0 -m 1 -p 8 --seed=123 \
+	bowtie -q -5 1 -3 ${cut3prime} -v 0 -m 1 -p 8 --seed=123 -S \
 	--un R2_mapping/unmapped.fastq \
 	$GENDIR/$IX R2_mapping/tmp.fastq \
-	R2_mapping/${EXPID}_R2_$((${READLEN}-${cut3prime})).bam
+	R2_mapping/${EXPID}_R2_$((${READLEN}-${cut3prime})).sam
 	sleep 1
 done
 
@@ -241,10 +241,10 @@ done
 echo "      Iterative mapping of the first reads to repeat..."
 
 cp R1_mapping/unmapped.fastq R1_mapping/tmp.fastq
-bowtie -q -5 1 -v 0 -m 1 -p 8 --seed=123 \
+bowtie -q -5 1 -v 0 -p 8 --seed=123 -S \
 	--un R1_mapping/unmapped.fastq \
 	$REPGENDIR/$REPIX R1_mapping/tmp.fastq \
-	R1_mapping/${EXPID}_REP_R1_${READLEN}.bam
+	R1_mapping/${EXPID}_REP_R1_${READLEN}.sam
 
 for (( c=$START; c<=$END; c++ ))
 do
@@ -254,19 +254,19 @@ do
 	#Create tmp file for unmapped reads
 	cp R1_mapping/unmapped.fastq R1_mapping/tmp.fastq
 	#Conduct mapping
-	bowtie -q -5 1 -3 ${cut3prime} -v 0 -m 1 -p 8 --seed=123 \
+	bowtie -q -5 1 -3 ${cut3prime} -v 0 -p 8 --seed=123 -S \
 	--un R1_mapping/unmapped.fastq \
 	$GENDIR/$IX R1_mapping/tmp.fastq \
-	R1_mapping/${EXPID}_REP_R1_$((${READLEN}-${cut3prime})).bam
+	R1_mapping/${EXPID}_REP_R1_$((${READLEN}-${cut3prime})).sam
 	sleep 1
 done
 
 echo "      Iterative mapping of the second reads to repeat..."
 
-bowtie -q -5 1 -v 0 -m 1 -p 8 --seed=123 \
+bowtie -q -5 1 -v 0 -p 8 --seed=123 -S \
 	--un R1_mapping/unmapped.fastq \
 	$REPGENDIR/$REPIX ${FQ2} \
-	R2_mapping/${EXPID}_REP_R2_${READLEN}.bam
+	R2_mapping/${EXPID}_REP_R2_${READLEN}.sam
 
 for (( c=$START; c<=$END; c++ ))
 do
@@ -276,10 +276,10 @@ do
 	#Create tmp file for unmapped reads
 	cp R2_mapping/unmapped.fastq R2_mapping/tmp.fastq
 	#Conduct mapping
-	bowtie -q -5 1 -3 ${cut3prime} -v 0 -m 1 -p 8 --seed=123 \
+	bowtie -q -5 1 -3 ${cut3prime} -v 0 -p 8 --seed=123 -S \
 	--un R2_mapping/unmapped.fastq \
 	$REPGENDIR/$REPIX R2_mapping/tmp.fastq \
-	R2_mapping/${EXPID}_REP_R2_$((${READLEN}-${cut3prime})).bam
+	R2_mapping/${EXPID}_REP_R2_$((${READLEN}-${cut3prime})).sam
 	sleep 1
 done
 
@@ -299,7 +299,10 @@ do
 	echo -n "$c "
 	#Need the trim number for accessing different files
 	cut3prime=$(($c*5))
-	#Conduct mapping
+	#Convert bam file
+	samtools view -b \
+	R1_mapping/${EXPID}_R1_$((${READLEN}-${cut3prime})).sam \
+	> R1_mapping/${EXPID}_R1_$((${READLEN}-${cut3prime})).bam
 	#Remove the header and give only the mapped reads
 	samtools view -h -F 4 -b \
 	R1_mapping/${EXPID}_R1_$((${READLEN}-${cut3prime})).bam \
@@ -318,7 +321,10 @@ do
 	echo -n "$c "
 	#Need the trim number for accessing different files
 	cut3prime=$(($c*5))
-	#Conduct mapping
+	#Convert bam file
+	samtools view -b \
+	R2_mapping/${EXPID}_R2_$((${READLEN}-${cut3prime})).sam \
+	> R2_mapping/${EXPID}_R2_$((${READLEN}-${cut3prime})).bam
 	#Remove the header and give only the mapped reads
 	samtools view -h -F 4 -b \
 	R2_mapping/${EXPID}_R2_$((${READLEN}-${cut3prime})).bam \
@@ -337,7 +343,10 @@ do
 	echo -n "$c "
 	#Need the trim number for accessing different files
 	cut3prime=$(($c*5))
-	#Conduct mapping
+	#Convert bam file
+	samtools view -b \
+	R1_mapping/${EXPID}_REP_R1_$((${READLEN}-${cut3prime})).sam \
+	> R1_mapping/${EXPID}_REP_R1_$((${READLEN}-${cut3prime})).bam
 	#Remove the header and give only the mapped reads
 	samtools view -h -F 4 -b \
 	R1_mapping/${EXPID}_REP_R1_$((${READLEN}-${cut3prime})).bam \
@@ -356,7 +365,10 @@ do
 	echo -n "$c "
 	#Need the trim number for accessing different files
 	cut3prime=$(($c*5))
-	#Conduct mapping
+	#Convert bam file
+	samtools view -b \
+	R2_mapping/${EXPID}_REP_R2_$((${READLEN}-${cut3prime})).sam \
+	> R2_mapping/${EXPID}_REP_R2_$((${READLEN}-${cut3prime})).bam
 	#Remove the header and give only the mapped reads
 	samtools view -h -F 4 -b \
 	R2_mapping/${EXPID}_REP_R2_$((${READLEN}-${cut3prime})).bam \
