@@ -302,12 +302,12 @@ do
 	#Conduct mapping
 	#Remove the header and give only the mapped reads
 	samtools view -h -F 4 -b \
-	R1_mapping/${EXPID}_REP_R1_$((${READLEN}-${cut3prime})).bam \
-	> R1_mapping/${EXPID}_REP_MAPPED_R1_$((${READLEN}-${cut3prime})).bam
+	R1_mapping/${EXPID}_R1_$((${READLEN}-${cut3prime})).bam \
+	> R1_mapping/${EXPID}_MAPPED_R1_$((${READLEN}-${cut3prime})).bam
 	#Convert to a bed file
 	bedtools bamtobed -i \
-	R1_mapping/${EXPID}_REP_MAPPED_R1_$((${READLEN}-${cut3prime})).bam \
-	> R1_mapping/${EXPID}_REP_MAPPED_R1_$((${READLEN}-${cut3prime})).bed
+	R1_mapping/${EXPID}_MAPPED_R1_$((${READLEN}-${cut3prime})).bam \
+	> R1_mapping/${EXPID}_MAPPED_R1_$((${READLEN}-${cut3prime})).bed
 	sleep 1
 done
 
