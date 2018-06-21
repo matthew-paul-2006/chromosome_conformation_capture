@@ -195,7 +195,7 @@ END=$(((${READLEN}-20)/10))
 
 echo "      Iterative mapping of the first reads to reference..."
 
-bowtie -q -5 1 -v 0 -m 1 -p 8 --seed=123 \
+bowtie -q -5 1 -v 0 -m 1 -p 8 --seed=123 -S \
 	--un R1_mapping/unmapped.fastq \
 	$GENDIR/$IX ${FQ1} \
 	R1_mapping/${EXPID}_R1_${READLEN}.sam
@@ -208,7 +208,7 @@ do
 	#Create tmp file for unmapped reads
 	cp R1_mapping/unmapped.fastq R1_mapping/tmp.fastq
 	#Conduct mapping
-	bowtie -q -5 1 -3 ${cut3prime} -v 0 -m 1 -p 8 --seed=123 \
+	bowtie -q -5 1 -3 ${cut3prime} -v 0 -m 1 -p 8 --seed=123 -S \
 	--un R1_mapping/unmapped.fastq \
 	$GENDIR/$IX R1_mapping/tmp.fastq \
 	R1_mapping/${EXPID}_R1_$((${READLEN}-${cut3prime})).sam
