@@ -391,13 +391,34 @@ cat R2_mapping/${EXPID}_REP_MAPPED_R2_*.bed > ${EXPID}_REP_MAPPED_R2.bed
 #                               Merge files                                    #
 #------------------------------------------------------------------------------#
 
-#Should be fairly easy to aprse in a new argument that will give the wildcard used to start the read names
-#perl /home/mrp420/yeast/scripts/bootstrapmerge_QUI.pl MERGEREADY${TAG2}.bed MERGEREADY${TAG4}.bed ${TAG5}_rDNA_intra_MERGED.bed
-#perl /home/mrp420/yeast/scripts/bootstrapmerge_QUI.pl MERGEREADY${TAG7}.bed MERGEREADY${TAG9}.bed ${TAG5}_MERGED.bed
-#perl /home/mrp420/yeast/scripts/bootstrapmerge_QUI.pl MERGEREADY${TAG2}.bed MERGEREADY${TAG9}.bed ${TAG5}_rDNA_inter1_MERGED.bed
-#perl /home/mrp420/yeast/scripts/bootstrapmerge_QUI.pl MERGEREADY${TAG4}.bed MERGEREADY${TAG7}.bed ${TAG5}_rDNA_inter2_MERGED.bed
+module load perl/intel/5.24.0
 
+echo "      Modify files to allow them to be merged..."
+awk '{OFS="\t"; print $4,$1,$2,$6}' ${EXPID}_REP_MAPPED_R1.bed > MERGEREADY_${EXPID}_REP_R1.bed
+awk '{OFS="\t"; print $4,$1,$2,$6}' ${EXPID}_REP_MAPPED_R2.bed > MERGEREADY_${EXPID}_REP_R2.bed
+awk '{OFS="\t"; print $4,$1,$2,$6}' ${EXPID}_MAPPED_R1.bed > MERGEREADY_${EXPID}_REP_R1.bed
+awk '{OFS="\t"; print $4,$1,$2,$6}' ${EXPID}_MAPPED_R2.bed > MERGEREADY_${EXPID}_REP_R2.bed
 
+echo "      Merge files using perl script. Uses the ID for each read to find its respective pair...."
+perl /home/mrp420/worms/scripts/bed_pe_merge.pl MERGEREADY_${EXPID}_REP_R1.bed MERGEREADY_${EXPID}_REP_R2.bed ${EXPID}_REP_intra_MERGED.bed
+perl /home/mrp420/worms/scripts/bed_pe_merge.pl MERGEREADY_${EXPID}_R1.bed MERGEREADY_${EXPID}_R2.bed ${EXPID}_intra_MERGED.bed
+perl /home/mrp420/worms/scripts/bed_pe_merge.pl MERGEREADY_${EXPID}_REP_R1.bed MERGEREADY_${EXPID}_R2.bed ${EXPID}_inter1_MERGED.bed
+perl /home/mrp420/worms/scripts/bed_pe_merge.pl MERGEREADY_${EXPID}_R1.bed MERGEREADY_${EXPID}_REP_R2.bed ${EXPID}_inter2_MERGED.bed
+cat ${EXPID}_inter1_MERGED.bed ${EXPID}_inter2_MERGED.bed > ${EXPID}_inter_MERGED.bed
+ 
+#------------------------------------------------------------------------------#
+#                Filter reads for intra versus inter                           #
+#------------------------------------------------------------------------------# 
+ 
+ echo "      Interactions are filtered to either inter-chromosomal or intra-chromosomal ...."
+awk '{OFS="\t"} {if ($2 == $5) print $2,$3,$5,$6,$4,$7,$1}' ${EXPID}_intra_MERGED.bed > ${EXPID}_intra.bed
+
+awk '{OFS="\t"} {if ($2 < $4) print $1,$2,$4,$5,$6,$7;
+else
+print $1,$4,$2,$5,$6,$7;
+}' ${EXPID}_intra.bed > ${EXPID}_intra_sorted.bed
+
+awk '{OFS="\t"} {if ($2 != $5) print $2,$3,$5,$6,$4,$7,$1}' ${EXPID}_intra_MERGED.bed > ${EXPID}_inter.bed
 
 #------------------------------------------------------------------------------#
 #                                  Clean up                                    #
