@@ -420,6 +420,11 @@ print $1,$4,$2,$5,$6,$7;
 
 awk '{OFS="\t"} {if ($2 != $5) print $2,$3,$5,$6,$4,$7,$1}' ${EXPID}_intra_MERGED.bed > ${EXPID}_inter.bed
 
+#want to subtract the ROI from the reference genome
+#fend assignment
+
+
+
 #------------------------------------------------------------------------------#
 #                                  Clean up                                    #
 #------------------------------------------------------------------------------#
